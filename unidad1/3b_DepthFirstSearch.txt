@@ -1,0 +1,24 @@
+static void DFS(State initial) {
+        Stack<Node> stack = new Stack<>();
+        Set<String> visited = new HashSet<>();
+        Node initialNode = new Node(initial, null);
+        stack.push(initialNode);
+        visited.add(Arrays.deepToString(initial.board));
+
+        while (!stack.isEmpty()) {
+            Node currentNode = stack.pop();
+            State currentState = currentNode.state;
+            if (currentState.isGoal()) {
+                printSolution(currentNode, visited.size());
+                return;
+            }
+            for (State nextState : currentState.getNextStates()) {
+                String nextStateStr = Arrays.deepToString(nextState.board);
+                if (!visited.contains(nextStateStr)) {
+                    visited.add(nextStateStr);
+                    Node nextNode = new Node(nextState, currentNode);
+                    stack.push(nextNode);
+                }
+            }
+        }
+    }

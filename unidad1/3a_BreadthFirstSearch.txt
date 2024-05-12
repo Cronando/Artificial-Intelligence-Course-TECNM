@@ -1,0 +1,24 @@
+static void BFS(State initial) {
+        Queue<Node> queue = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+        Node initialNode = new Node(initial, null);
+        queue.add(initialNode);
+        visited.add(Arrays.deepToString(initial.board));
+
+        while (!queue.isEmpty()) {
+            Node currentNode = queue.poll();
+            State currentState = currentNode.state;
+            if (currentState.isGoal()) {
+                printSolution(currentNode, visited.size());
+                return;
+            }
+            for (State nextState : currentState.getNextStates()) {
+                String nextStateStr = Arrays.deepToString(nextState.board);
+                if (!visited.contains(nextStateStr)) {
+                    visited.add(nextStateStr);
+                    Node nextNode = new Node(nextState, currentNode);
+                    queue.add(nextNode);
+                }
+            }
+        }
+    }
