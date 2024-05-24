@@ -1,0 +1,47 @@
+FUNCTION_BLOCK room_comfort
+VAR_INPUT
+    temperature : REAL;
+    humidity : REAL;
+END_VAR
+
+VAR_OUTPUT
+    comfort : REAL;
+END_VAR
+
+FUZZIFY temperature
+    TERM cold := (0, 1) (10, 1) (15, 0);
+    TERM comfortable := (10, 0) (20, 1) (25, 1) (30, 0);
+    TERM hot := (25, 0) (30, 1) (40, 1);
+END_FUZZIFY
+
+FUZZIFY humidity
+    TERM low := (0, 1) (30, 1) (40, 0);
+    TERM medium := (30, 0) (50, 1) (70, 0);
+    TERM high := (60, 0) (70, 1) (100, 1);
+END_FUZZIFY
+
+DEFUZZIFY comfort
+    METHOD : COG;
+    RANGE : 0..10;
+    DEFAULT := 5;
+    ACCU : MAX;
+    TERM uncomfortable := 0;
+    TERM neutral := 1;
+    TERM comfortable := 2;
+END_DEFUZZIFY
+
+RULEBLOCK control
+    AND : MIN;
+    ACT : MIN;
+    RULE 1 : IF temperature IS cold AND humidity IS low THEN comfort IS uncomfortable;
+    RULE 2 : IF temperature IS cold AND humidity IS medium THEN comfort IS neutral;
+    RULE 3 : IF temperature IS cold AND humidity IS high THEN comfort IS uncomfortable;
+    RULE 4 : IF temperature IS comfortable AND humidity IS low THEN comfort IS neutral;
+    RULE 5 : IF temperature IS comfortable AND humidity IS medium THEN comfort IS comfortable;
+    RULE 6 : IF temperature IS comfortable AND humidity IS high THEN comfort IS neutral;
+    RULE 7 : IF temperature IS hot AND humidity IS low THEN comfort IS uncomfortable;
+    RULE 8 : IF temperature IS hot AND humidity IS medium THEN comfort IS neutral;
+    RULE 9 : IF temperature IS hot AND humidity IS high THEN comfort IS uncomfortable;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
