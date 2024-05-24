@@ -1,32 +1,30 @@
 import net.sourceforge.jFuzzyLogic.FIS;
 import net.sourceforge.jFuzzyLogic.FunctionBlock;
-import net.sourceforge.jFuzzyLogic.plot.JFuzzyChart;
 
-import java.util.Scanner;
 public class FuzzyLogic {
-    public static void main(String[] args) throws Exception {
-        String filename = "imc.fcl";
+    private FunctionBlock functionBlock;
+
+    public FuzzyLogic(String filename) throws Exception {
         FIS fis = FIS.load(filename, true);
+        this.functionBlock = fis.getFunctionBlock(null);
+    }
 
-        Scanner scanner = new Scanner(System.in);
-        FunctionBlock fb = fis.getFunctionBlock(null);
+    public void setInputVariables(double temperature, double humidity) {
+        functionBlock.setVariable("temperature", temperature);
+        functionBlock.setVariable("humidity", humidity);
+    }
 
-        // Entradas
-        System.out.print("Introduce la altura en CM:");
-        int altura = scanner.nextInt();
-        System.out.print("Introduce el peso en KG");
-        int peso = scanner.nextInt();
-        fb.setVariable("altura", altura);
-        fb.setVariable("peso", peso);
-        // Evaluar
-        fb.evaluate();
+    public void evaluate() {
+        functionBlock.evaluate();
+    }
 
+    public double getComfortLevel() {
+        functionBlock.getVariable("comfort").defuzzify();
+        return functionBlock.getVariable("comfort").getValue();
+    }
 
-        fb.getVariable("categoria").defuzzify();
-
-
-        System.out.println(fb);
-        System.out.println("categoria: " + fb.getVariable("categoria").getValue());
-        JFuzzyChart.get().chart(fb);
+    @Override
+    public String toString() {
+        return functionBlock.toString();
     }
 }

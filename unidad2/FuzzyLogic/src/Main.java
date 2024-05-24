@@ -1,17 +1,22 @@
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
 public class Main {
-    public static void main(String[] args) {
-        // Press Alt+Intro with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+    public static void main(String[] args) throws Exception {
+        // Initialize Room Comfort Processor
+        String filename = "roomcomfort.fcl";
+        FuzzyLogic fuzz = new FuzzyLogic(filename);
 
-        // Press Mayús+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
+        // Get user input
+        Input input = new Input();
+        double temperature = input.getTemperature();
+        double humidity = input.getHumidity();
+        input.close();
 
-            // Press Mayús+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
-        }
+        // Set input variables and evaluate
+        fuzz.setInputVariables(temperature, humidity);
+        fuzz.evaluate();
+
+        // Get and print the comfort level
+        double comfortLevel = fuzz.getComfortLevel();
+        System.out.println(fuzz);
+        System.out.println("Comfort Level: " + comfortLevel);
     }
 }
